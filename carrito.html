@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carrito — Riot Merch</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div id="nav-slot"></div>
+
+  <section class="container section">
+    <div id="cart-root"></div>
+  </section>
+
+  <div id="footer-slot"></div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/partials.js"></script>
+  <script>
+    function render() {
+      const items = getCart();
+      const root = document.getElementById("cart-root");
+      if (items.length === 0) {
+        root.innerHTML = `
+          <div class="cart-empty">
+            <div class="icon" style="font-size:4rem;">🛍</div>
+            <h1 style="font-size:clamp(3rem,7vw,5rem);">Carrito vacío</h1>
+            <p class="text-muted" style="margin-top:.75rem;max-width:28rem;margin-left:auto;margin-right:auto;">
+              Todavía no agregaste merch. Date una vuelta por la tienda y armá tu uniforme.
+            </p>
+            <a href="productos.html" class="btn btn-blood btn-lg" style="margin-top:2rem;">EXPLORAR PRODUCTOS</a>
+          </div>`;
+        return;
+      }
+      const total = cartTotal();
+      const shipping = total > 30000 ? 0 : 2500;
+      root.innerHTML = `
+        <header style="margin-bottom:2.5rem;">
+          <p class="kicker">TU BOTÍN</p>
+          <h1 style="font-size:clamp(3rem,7vw,5rem);margin-top:.5rem;">Carrito (${cartCount()})</h1>
+        </header>
+        <div class="cart-grid">
+          <div>
+            ${items.map(i => `
+              <article class="cart-line" data-id="${i.id}">
+                <img src="${i.image}" alt="${i.name}" />
+                <div class="info">
+                  <p class="band stencil text-blood" style="font-size:.75rem;">${i.band}</p>
+                  <h3 style="font-size:1.5rem;">${i.name}</h3>
+                  <p class="text-muted" style="font-size:.875rem;margin-top:.25rem;">${i.category}</p>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.75rem;">
+                    <div class="qty">
+                      <button data-act="dec">−</button>
+                      <span>${i.qty}</span>
+                      <button data-act="inc">+</button>
+                    </div>
+                    <span style="font-weight:700;font-size:1.125rem;">${money(i.price * i.qty)}</span>
+                  </div>
+                </div>
+                <button class="remove" data-act="rm" aria-label="Eliminar">🗑</button>
+              </article>
+            `).join("")}
+          </div>
+          <aside class="cart-summary">
+            <h2>Resumen</h2>
+            <div class="row"><span>Subtotal</span><span>${money(total)}</span></div>
+            <div class="row"><span>Envío</span><span>${shipping === 0 ? "GRATIS" : money(shipping)}</span></div>
+            <div class="total"><span>Total</span><span>${money(total + shipping)}</span></div>
+            <button class="checkout" id="checkout">FINALIZAR COMPRA</button>
+            <button id="clear" style="width:100%;margin-top:.75rem;font-size:.875rem;color:hsl(var(--muted-foreground));">Vaciar carrito</button>
+          </aside>
+        </div>
+      `;
+
+      root.querySelectorAll(".cart-line").forEach(line => {
+        const id = line.dataset.id;
+        line.querySelector('[data-act="dec"]').onclick = () => {
+          const item = getCart().find(i => i.id === id);
+          setQty(id, item.qty - 1); render();
+        };
+        line.querySelector('[data-act="inc"]').onclick = () => {
+          const item = getCart().find(i => i.id === id);
+          setQty(id, item.qty + 1); render();
+        };
+        line.querySelector('[data-act="rm"]').onclick = () => { removeFromCart(id); render(); };
+      });
+      document.getElementById("checkout").onclick = () => toast("Pedido enviado al checkout (demo)");
+      document.getElementById("clear").onclick = () => { clearCart(); render(); };
+    }
+    render();
+  </script>
+</body>
+</html>

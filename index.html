@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RIOT MERCH — Indumentaria oficial de bandas de rock</title>
+  <meta name="description" content="Tienda de merch oficial: remeras, hoodies, vinilos y posters de las bandas más legendarias del rock." />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div id="nav-slot"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img class="bg" src="assets/img/hero-concert.jpg" alt="Multitud en concierto de rock con luces rojas" />
+    <div class="container">
+      <span class="stamp" style="animation: flicker 3s infinite;">DROP 24 / 25</span>
+      <h1 class="glitch">
+        Vestí el<br />
+        <span class="text-blood">RUIDO</span><br />
+        que te define
+      </h1>
+      <p>Indumentaria oficial de las bandas que escribieron la historia del rock. Algodón premium, prints que duran toda una gira.</p>
+      <div class="actions">
+        <a href="productos.html" class="btn btn-blood btn-lg">Ver Productos</a>
+        <a href="#novedades" class="btn btn-outline btn-lg">Novedades</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee">
+    <div class="marquee-track" id="marquee-track"></div>
+  </div>
+
+  <!-- TRUST -->
+  <section class="container section-sm">
+    <div class="grid grid-trust">
+      <div class="trust-card"><div class="icon">🚚</div><p class="t">Envío a todo el país</p><p class="s">24-72hs</p></div>
+      <div class="trust-card"><div class="icon">🛡</div><p class="t">Compra protegida</p><p class="s">Mercado Pago</p></div>
+      <div class="trust-card"><div class="icon">🔥</div><p class="t">Drops semanales</p><p class="s">Stock limitado</p></div>
+      <div class="trust-card"><div class="icon">💿</div><p class="t">Licencias oficiales</p><p class="s">100% original</p></div>
+    </div>
+  </section>
+
+  <!-- NOVEDADES -->
+  <section id="novedades" class="container section">
+    <div class="section-title">
+      <div>
+        <p class="kicker">FRESCO DEL BACKSTAGE</p>
+        <h2>Novedades</h2>
+      </div>
+      <a href="productos.html">VER TODO →</a>
+    </div>
+    <div class="grid grid-products" id="novedades-grid"></div>
+  </section>
+
+  <!-- SPOTIFY -->
+  <section class="container section">
+    <div class="section-title">
+      <h2>Sound the Riot</h2>
+      <span class="stencil text-muted" style="display:none;" class="md-show">// PLAYLIST OFICIAL</span>
+    </div>
+    <p class="text-muted" style="max-width:42rem;margin-bottom:2rem;">
+      Subí el volumen mientras navegás. Esta es la playlist que suena en nuestro local — clásicos del rock que no fallan.
+    </p>
+    <div style="border:2px solid hsl(var(--blood));box-shadow:var(--shadow-blood);">
+      <iframe title="Spotify Rock Classics"
+        src="https://open.spotify.com/embed/playlist/37i9dQZF1DWXRqgorJj26U?utm_source=generator&theme=0"
+        width="100%" height="380" frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy" style="display:block;"></iframe>
+    </div>
+  </section>
+
+  <!-- FAN VIDEOS PREVIEW -->
+  <section class="container section">
+    <div class="section-title">
+      <div>
+        <p class="kicker">LA TRIBU EN VIVO</p>
+        <h2>Fans en recitales</h2>
+      </div>
+      <a href="comunidad.html">VER TODOS →</a>
+    </div>
+    <div class="grid grid-3" id="fans-preview"></div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="container section">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <p class="kicker">VOCES DE LA TRIBU</p>
+      <h2 style="font-size:clamp(2.5rem,6vw,4.5rem);margin-top:.5rem;">Lo que dicen los fans</h2>
+    </div>
+    <div class="grid grid-4" id="reviews-grid"></div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container section">
+    <div class="cta-box">
+      <h2>Sumate al RIOT</h2>
+      <p>Suscribite y enterate primero de los drops, descuentos exclusivos y entradas a sorteos.</p>
+      <form onsubmit="event.preventDefault(); this.querySelector('input').value=''; toast('¡Gracias por sumarte!');">
+        <input type="email" required placeholder="tu@email.com" />
+        <button type="submit">ENROLARME</button>
+      </form>
+    </div>
+  </section>
+
+  <div id="footer-slot"></div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/partials.js"></script>
+  <script>
+    // Marquee
+    const items = ["ENVÍO GRATIS +$30.000", "★", "DROP 24 DISPONIBLE", "★", "3 CUOTAS SIN INTERÉS", "★", "STOCK LIMITADO", "★"];
+    const all = [...items, ...items, ...items, ...items];
+    document.getElementById("marquee-track").innerHTML = all.map(t => `<span>${t}</span>`).join("");
+
+    // Novedades
+    const novedades = window.PRODUCTS.filter(p => p.isNew);
+    document.getElementById("novedades-grid").innerHTML = novedades.map(productCardHTML).join("");
+    bindProductCardButtons();
+
+    // Fan videos preview
+    document.getElementById("fans-preview").innerHTML = window.FAN_VIDEOS.slice(0, 3).map(fanVideoHTML).join("");
+    bindFanVideos();
+
+    // Reviews
+    const reviews = [
+      { name: "Lucía M.", text: "La calidad de la remera es brutal, igual a la de un recital. Llegó en 3 días.", rating: 5, city: "Buenos Aires" },
+      { name: "Javier R.", text: "El hoodie de AC/DC es exactamente lo que buscaba. Atención 10/10.", rating: 5, city: "Córdoba" },
+      { name: "Mara P.", text: "Vinilo impecable, edición limitada. Lo recomiendo cerrado.", rating: 5, city: "Rosario" },
+      { name: "Diego F.", text: "La campera de jean con parches es una bomba, llueven cumplidos.", rating: 4, city: "Mendoza" }
+    ];
+    document.getElementById("reviews-grid").innerHTML = reviews.map(r => `
+      <blockquote class="review-card">
+        <div class="stars">${"★".repeat(r.rating)}<span class="empty">${"★".repeat(5-r.rating)}</span></div>
+        <p>"${r.text}"</p>
+        <footer class="stencil" style="font-size:.875rem;">
+          <span class="text-blood">${r.name}</span><span class="text-muted"> · ${r.city}</span>
+        </footer>
+      </blockquote>
+    `).join("");
+  </script>
+</body>
+</html>

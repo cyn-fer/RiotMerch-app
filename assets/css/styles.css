@@ -1,0 +1,562 @@
+/* =========================================================
+   RIOT MERCH — Static stylesheet (hand-written, editable)
+   Replace any value freely. All colors in HSL via CSS vars.
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Metal+Mania&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --background: 0 0% 6%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 9%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 60%;
+  --border: 0 0% 18%;
+  --secondary: 0 0% 14%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 45 100% 55%;
+  --blood: 0 84% 45%;
+  --blood-deep: 0 90% 28%;
+  --primary-glow: 0 95% 60%;
+
+  --gradient-blood: linear-gradient(135deg, hsl(var(--blood-deep)), hsl(var(--blood)) 50%, hsl(var(--primary-glow)));
+  --gradient-stage: radial-gradient(ellipse at top, hsl(var(--blood) / 0.35), transparent 60%);
+  --gradient-dark: linear-gradient(180deg, hsl(0 0% 4%), hsl(0 0% 10%));
+
+  --shadow-blood: 0 20px 60px -20px hsl(var(--blood) / 0.6);
+  --shadow-hard: 8px 8px 0 hsl(var(--blood));
+}
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; border: 0 solid hsl(var(--border)); }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(ellipse at top, hsl(var(--blood) / 0.08), transparent 50%);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; background: none; color: inherit; }
+input, textarea, select { font: inherit; color: inherit; }
+ul { list-style: none; }
+
+h1, h2, h3, .display {
+  font-family: 'Metal Mania', 'Bebas Neue', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  line-height: 1;
+}
+.stencil {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.08em;
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.section { padding: 4rem 0; }
+.section-sm { padding: 2.5rem 0; }
+
+/* ============ NAVBAR ============ */
+.navbar {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(8px);
+  background: hsl(var(--background) / 0.8);
+  border-bottom: 1px solid hsl(var(--border));
+}
+.navbar-inner {
+  height: 80px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.navbar-logo { height: 48px; width: auto; animation: flicker 3s infinite; }
+.nav-links { display: flex; align-items: center; gap: 0.25rem; }
+.nav-links a {
+  padding: 0.5rem 1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.125rem;
+  letter-spacing: 0.15em;
+  border-bottom: 2px solid transparent;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  transition: color .2s, border-color .2s;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: hsl(var(--blood));
+  border-color: hsl(var(--blood));
+}
+.nav-links .label { display: none; }
+@media (min-width: 640px) { .nav-links .label { display: inline; } }
+
+.cart-badge {
+  position: relative;
+}
+.cart-badge .count {
+  position: absolute; top: -8px; right: -12px;
+  background: hsl(var(--blood));
+  color: hsl(var(--primary-foreground));
+  font-family: 'Inter'; font-weight: 700;
+  font-size: .75rem;
+  border-radius: 999px;
+  width: 1.25rem; height: 1.25rem;
+  display: none; align-items: center; justify-content: center;
+  animation: pulse-blood 2s infinite;
+}
+.cart-badge .count.visible { display: flex; }
+
+/* ============ BUTTONS ============ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .75rem 1.5rem;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.15em;
+  font-size: 1rem;
+  border: 2px solid transparent;
+  transition: all .2s;
+}
+.btn-lg { padding: 1rem 2rem; font-size: 1.125rem; }
+.btn-blood {
+  background: hsl(var(--blood));
+  color: hsl(var(--primary-foreground));
+  box-shadow: var(--shadow-hard);
+}
+.btn-blood:hover { background: hsl(var(--primary-glow)); box-shadow: var(--shadow-blood); }
+.btn-outline {
+  border-color: hsl(var(--foreground));
+  color: hsl(var(--foreground));
+}
+.btn-outline:hover { background: hsl(var(--foreground)); color: hsl(var(--background)); }
+
+/* ============ HELPERS ============ */
+.text-blood { color: hsl(var(--blood)); }
+.bg-blood { background: hsl(var(--blood)); }
+.bg-card { background: hsl(var(--card)); }
+.text-muted { color: hsl(var(--muted-foreground)); }
+.kicker {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  color: hsl(var(--blood));
+  font-size: .95rem;
+}
+.stamp {
+  border: 2px solid hsl(var(--blood));
+  color: hsl(var(--blood));
+  padding: .25rem .75rem;
+  transform: rotate(-3deg);
+  display: inline-block;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.15em;
+  font-size: .75rem;
+  background: hsl(var(--background) / 0.8);
+}
+.glitch {
+  text-shadow: 2px 0 hsl(var(--blood)), -2px 0 hsl(var(--accent) / 0.6);
+}
+.bg-gradient-blood { background-image: var(--gradient-blood); }
+.shadow-blood { box-shadow: var(--shadow-blood); }
+.section-title {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  border-bottom: 1px solid hsl(var(--blood) / 0.4);
+  padding-bottom: .75rem; margin-bottom: 2rem;
+  gap: 1rem; flex-wrap: wrap;
+}
+.section-title h2 { font-size: clamp(2rem, 5vw, 4rem); }
+.section-title a { font-family: 'Bebas Neue'; letter-spacing: 0.15em; }
+.section-title a:hover { color: hsl(var(--blood)); }
+
+/* ============ HERO ============ */
+.hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex; align-items: center;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+.hero img.bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.7;
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to right, hsl(var(--background)), hsl(var(--background) / 0.7), transparent);
+  z-index: 1;
+}
+.hero .container { position: relative; z-index: 2; padding-top: 5rem; padding-bottom: 5rem; }
+.hero h1 {
+  font-size: clamp(3rem, 9vw, 8rem);
+  line-height: 0.85;
+  margin-top: 1.5rem;
+  max-width: 60ch;
+}
+.hero p { margin-top: 1.5rem; max-width: 36rem; color: hsl(var(--foreground) / 0.8); font-size: 1.125rem; }
+.hero .actions { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+
+.page-hero {
+  position: relative; border-bottom: 1px solid hsl(var(--border)); overflow: hidden;
+}
+.page-hero::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, hsl(var(--blood) / 0.2), hsl(var(--background)) 60%);
+}
+.page-hero .container { position: relative; padding: 5rem 1.5rem; }
+.page-hero h1 { font-size: clamp(3rem, 8vw, 6rem); margin-top: 1rem; line-height: 0.9; max-width: 60rem; }
+.page-hero p { margin-top: 1.5rem; max-width: 42rem; font-size: 1.125rem; color: hsl(var(--foreground) / 0.8); }
+
+/* ============ MARQUEE ============ */
+.marquee {
+  background: hsl(var(--blood));
+  color: hsl(var(--primary-foreground));
+  padding: .75rem 0;
+  border-top: 2px solid hsl(var(--background));
+  border-bottom: 2px solid hsl(var(--background));
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex; gap: 2rem;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+}
+.marquee-track span {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  font-size: 1.125rem;
+  padding: 0 1rem;
+}
+
+/* ============ GRIDS ============ */
+.grid { display: grid; gap: 1.5rem; }
+.grid-trust { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.grid-products { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.grid-3 { grid-template-columns: 1fr; }
+@media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+.grid-4 { grid-template-columns: 1fr; }
+@media (min-width: 640px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .grid-4 { grid-template-columns: repeat(4, 1fr); } }
+
+/* Trust card */
+.trust-card {
+  border: 1px solid hsl(var(--border));
+  padding: 1.5rem;
+  text-align: center;
+  transition: border-color .2s;
+}
+.trust-card:hover { border-color: hsl(var(--blood)); }
+.trust-card .icon { color: hsl(var(--blood)); margin: 0 auto .75rem; }
+.trust-card .t { font-family: 'Bebas Neue'; letter-spacing: 0.15em; }
+.trust-card .s { font-size: .75rem; color: hsl(var(--muted-foreground)); margin-top: .25rem; }
+
+/* ============ PRODUCT CARD ============ */
+.product-card {
+  position: relative;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  overflow: hidden;
+  transition: border-color .3s;
+}
+.product-card:hover { border-color: hsl(var(--blood)); }
+.product-card .img-wrap {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #000;
+}
+.product-card img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .5s;
+}
+.product-card:hover img { transform: scale(1.1); }
+.product-card .body { padding: 1.25rem; }
+.product-card .band { font-family: 'Bebas Neue'; letter-spacing: 0.15em; color: hsl(var(--blood)); font-size: .75rem; }
+.product-card h3 { font-size: 1.5rem; margin-top: .25rem; }
+.product-card .row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 1rem;
+}
+.product-card .price { font-size: 1.25rem; font-weight: 700; }
+.product-card .btn { padding: .5rem 1rem; font-size: .875rem; }
+.tag-stamp { position: absolute; top: .75rem; left: .75rem; z-index: 2; }
+.tag-new {
+  position: absolute; top: .75rem; right: .75rem; z-index: 2;
+  background: hsl(var(--blood));
+  color: hsl(var(--primary-foreground));
+  font-family: 'Bebas Neue'; letter-spacing: 0.15em;
+  font-size: .75rem; padding: .25rem .5rem;
+}
+
+/* ============ FILTERS ============ */
+.filters {
+  display: flex; flex-direction: column; gap: 1rem;
+  margin-bottom: 2rem;
+}
+@media (min-width: 1024px) { .filters { flex-direction: row; } }
+.filters input[type="search"] {
+  padding: .75rem 1rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  outline: none;
+  min-width: 320px;
+}
+.filters input[type="search"]:focus { border-color: hsl(var(--blood)); }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.chip {
+  font-family: 'Bebas Neue'; letter-spacing: 0.15em;
+  padding: .5rem 1rem;
+  border: 1px solid hsl(var(--border));
+  transition: border-color .2s, background .2s, color .2s;
+}
+.chip:hover { border-color: hsl(var(--blood)); }
+.chip.active {
+  background: hsl(var(--blood));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--blood));
+}
+
+/* ============ FAN VIDEO ============ */
+.video-card {
+  border: 2px solid hsl(var(--border));
+  background: hsl(var(--card));
+  transition: border-color .2s;
+}
+.video-card:hover { border-color: hsl(var(--blood)); }
+.video-card .thumb {
+  position: relative; aspect-ratio: 16 / 9;
+  background: #000; overflow: hidden; cursor: pointer;
+}
+.video-card .thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: .8; transition: opacity .3s, transform .5s;
+}
+.video-card:hover .thumb img { opacity: 1; transform: scale(1.05); }
+.video-card .play {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: hsl(var(--background) / 0.3);
+}
+.video-card .play span {
+  background: hsl(var(--blood)); color: hsl(var(--primary-foreground));
+  border-radius: 9999px; padding: 1.25rem;
+  box-shadow: var(--shadow-blood);
+  display: inline-flex; transition: transform .2s;
+}
+.video-card:hover .play span { transform: scale(1.1); }
+.video-card .meta { padding: 1.25rem; }
+.video-card .meta .band { font-family: 'Bebas Neue'; letter-spacing: 0.15em; color: hsl(var(--blood)); font-size: .875rem; }
+.video-card .meta .fan { font-family: 'Metal Mania'; font-size: 1.5rem; margin-top: .25rem; }
+.video-card .meta .loc { color: hsl(var(--muted-foreground)); font-size: .875rem; margin-top: .25rem; }
+.video-card .meta .prod { font-size: .75rem; margin-top: .75rem; border-top: 1px solid hsl(var(--border)); padding-top: .75rem; }
+
+/* ============ REVIEWS ============ */
+.review-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  padding: 1.5rem;
+  transition: all .2s;
+}
+.review-card:hover { border-color: hsl(var(--blood)); transform: translateY(-4px); }
+.stars { display: flex; gap: .25rem; margin-bottom: .75rem; color: hsl(var(--blood)); font-size: 1rem; }
+.stars .empty { color: hsl(var(--muted-foreground) / .4); }
+.review-card p { font-style: italic; color: hsl(var(--foreground) / 0.9); margin-bottom: 1rem; }
+
+/* ============ CTA ============ */
+.cta-box {
+  background: var(--gradient-blood);
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-blood);
+}
+@media (min-width: 768px) { .cta-box { padding: 4rem; } }
+.cta-box h2 { font-size: clamp(2rem, 5vw, 4rem); color: hsl(var(--primary-foreground)); }
+.cta-box p { color: hsl(var(--primary-foreground) / 0.9); margin: 1rem auto 0; max-width: 32rem; }
+.cta-box form {
+  margin: 1.5rem auto 0; display: flex; gap: .75rem; max-width: 32rem;
+  flex-direction: column;
+}
+@media (min-width: 640px) { .cta-box form { flex-direction: row; } }
+.cta-box input[type="email"] {
+  flex: 1; padding: .75rem 1rem;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 2px solid hsl(var(--background));
+}
+.cta-box button[type="submit"] {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  padding: .75rem 1.5rem;
+  font-family: 'Bebas Neue'; letter-spacing: 0.15em;
+}
+.cta-box button[type="submit"]:hover { background: hsl(var(--foreground)); color: hsl(var(--background)); }
+
+/* ============ FOOTER ============ */
+.footer {
+  background-image: var(--gradient-stage), var(--gradient-dark);
+  border-top: 1px solid hsl(var(--blood) / 0.3);
+  margin-top: 5rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  padding: 3.5rem 0;
+}
+@media (min-width: 768px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+.footer h4 {
+  font-family: 'Bebas Neue'; letter-spacing: 0.15em;
+  color: hsl(var(--blood)); font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+.footer li { font-size: .875rem; color: hsl(var(--muted-foreground)); padding: .25rem 0; }
+.footer .socials { display: flex; gap: .75rem; }
+.footer .socials a {
+  padding: .5rem; border: 1px solid hsl(var(--border));
+  display: inline-flex; transition: border-color .2s, color .2s;
+}
+.footer .socials a:hover { border-color: hsl(var(--blood)); color: hsl(var(--blood)); }
+.footer .copyright {
+  border-top: 1px solid hsl(var(--border));
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: .75rem;
+  color: hsl(var(--muted-foreground));
+}
+.app-badges { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .75rem; }
+.app-badges img { height: 48px; width: auto; transition: transform .2s; }
+.app-badges a:hover img { transform: scale(1.05); }
+
+/* ============ APP PAGE ============ */
+.promo-band {
+  background: var(--gradient-blood);
+  padding: 1.5rem 0;
+  text-align: center;
+}
+.promo-band p {
+  font-family: 'Bebas Neue'; letter-spacing: 0.15em;
+  color: hsl(var(--primary-foreground));
+  font-size: 1.25rem;
+}
+.app-card {
+  border: 1px solid hsl(var(--border));
+  padding: 2rem;
+  transition: border-color .2s;
+  display: flex; flex-direction: column;
+}
+.app-card:hover { border-color: hsl(var(--blood)); }
+.app-card .icon { color: hsl(var(--blood)); margin-bottom: 1rem; }
+.app-card .kicker { font-size: .75rem; }
+.app-card h3 { font-size: 1.875rem; margin-top: .5rem; }
+.app-card p { font-size: .875rem; color: hsl(var(--muted-foreground)); margin-top: .75rem; }
+.app-badges-lg img { height: 64px; }
+
+/* ============ CART PAGE ============ */
+.cart-grid {
+  display: grid; gap: 2.5rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 1024px) { .cart-grid { grid-template-columns: 2fr 1fr; } }
+.cart-line {
+  display: flex; gap: 1rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: border-color .2s;
+}
+.cart-line:hover { border-color: hsl(var(--blood)); }
+.cart-line img { width: 7rem; height: 7rem; object-fit: cover; flex-shrink: 0; }
+.cart-line .info { flex: 1; min-width: 0; }
+.cart-line .qty {
+  display: inline-flex; border: 1px solid hsl(var(--border));
+}
+.cart-line .qty button {
+  padding: .5rem; transition: background .2s, color .2s;
+}
+.cart-line .qty button:hover { background: hsl(var(--blood)); color: hsl(var(--primary-foreground)); }
+.cart-line .qty span { padding: 0 1rem; align-self: center; font-family: 'Bebas Neue'; }
+.cart-line .remove { color: hsl(var(--muted-foreground)); align-self: flex-start; }
+.cart-line .remove:hover { color: hsl(var(--blood)); }
+.cart-summary {
+  background: hsl(var(--card));
+  border: 2px solid hsl(var(--blood));
+  padding: 1.5rem;
+  box-shadow: var(--shadow-blood);
+  height: fit-content;
+}
+.cart-summary h2 { font-size: 1.875rem; margin-bottom: 1rem; }
+.cart-summary .row {
+  display: flex; justify-content: space-between;
+  color: hsl(var(--muted-foreground)); margin-bottom: .5rem;
+}
+.cart-summary .total {
+  border-top: 1px solid hsl(var(--border));
+  padding-top: 1rem; margin-top: 1rem;
+  display: flex; justify-content: space-between;
+  font-family: 'Metal Mania'; font-size: 1.875rem;
+}
+.cart-summary .total span:last-child { color: hsl(var(--blood)); }
+.cart-summary button.checkout {
+  width: 100%; margin-top: 1.5rem;
+  background: hsl(var(--blood));
+  color: hsl(var(--primary-foreground));
+  padding: 1rem;
+  font-family: 'Bebas Neue'; letter-spacing: 0.15em;
+  font-size: 1.125rem;
+}
+.cart-summary button.checkout:hover { background: hsl(var(--primary-glow)); }
+.cart-empty {
+  text-align: center; padding: 6rem 1.5rem;
+}
+.cart-empty .icon { color: hsl(var(--blood)); margin: 0 auto 1.5rem; }
+
+/* ============ WHATSAPP FAB ============ */
+.wa-fab {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50;
+  background: #25D366; color: #000;
+  padding: 1rem; border-radius: 9999px;
+  box-shadow: var(--shadow-blood);
+  animation: pulse-blood 2s infinite;
+  transition: transform .2s;
+  display: inline-flex;
+}
+.wa-fab:hover { transform: scale(1.1); }
+
+/* ============ TOAST ============ */
+.toast-container {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  display: flex; flex-direction: column; gap: .5rem;
+  pointer-events: none;
+}
+.toast {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--blood));
+  padding: .75rem 1.25rem;
+  font-size: .875rem;
+  box-shadow: var(--shadow-blood);
+  animation: toast-in .3s ease-out;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes flicker {
+  0%, 100%, 45%, 55% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes pulse-blood {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--blood) / 0.6); }
+  50% { box-shadow: 0 0 0 16px hsl(var(--blood) / 0); }
+}

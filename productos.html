@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Productos — Riot Merch</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div id="nav-slot"></div>
+
+  <section class="container section">
+    <header style="margin-bottom:2.5rem;">
+      <p class="kicker">EL ARSENAL</p>
+      <h1 style="font-size:clamp(3rem,7vw,5rem);margin-top:.5rem;">Productos</h1>
+      <p class="text-muted" style="margin-top:.5rem;max-width:42rem;">
+        Toda la colección. Filtrá por categoría o buscá tu banda favorita.
+      </p>
+    </header>
+
+    <div class="filters">
+      <input type="search" id="q" placeholder="Buscar banda o producto..." />
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="grid grid-products" id="grid"></div>
+    <p id="empty" class="stencil" style="display:none;text-align:center;padding:5rem 0;color:hsl(var(--muted-foreground));">SIN RESULTADOS</p>
+  </section>
+
+  <div id="footer-slot"></div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/partials.js"></script>
+  <script>
+    let cat = "Todos";
+    let q = "";
+
+    const chipsEl = document.getElementById("chips");
+    chipsEl.innerHTML = window.CATEGORIES.map(c =>
+      `<button class="chip${c===cat?' active':''}" data-cat="${c}">${c}</button>`
+    ).join("");
+    chipsEl.addEventListener("click", (e) => {
+      const b = e.target.closest(".chip"); if (!b) return;
+      cat = b.dataset.cat;
+      chipsEl.querySelectorAll(".chip").forEach(x => x.classList.toggle("active", x.dataset.cat === cat));
+      render();
+    });
+
+    document.getElementById("q").addEventListener("input", (e) => { q = e.target.value; render(); });
+
+    function render() {
+      const list = window.PRODUCTS.filter(p => {
+        const okCat = cat === "Todos" || p.category === cat;
+        const okQ = !q || (p.name + " " + p.band).toLowerCase().includes(q.toLowerCase());
+        return okCat && okQ;
+      });
+      const grid = document.getElementById("grid");
+      grid.innerHTML = list.map(productCardHTML).join("");
+      document.getElementById("empty").style.display = list.length ? "none" : "block";
+      bindProductCardButtons(grid);
+    }
+    render();
+  </script>
+</body>
+</html>

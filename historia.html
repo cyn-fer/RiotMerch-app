@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historia del Rock — Riot Merch</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div id="nav-slot"></div>
+
+  <section class="container section">
+    <header style="margin-bottom:2.5rem;">
+      <p class="kicker">ARCHIVO SONORO</p>
+      <h1 style="font-size:clamp(3rem,7vw,5rem);margin-top:.5rem;">Historia del Rock</h1>
+      <p class="text-muted" style="margin-top:.5rem;max-width:42rem;">
+        Más de 5.000 canciones que marcaron 70 años de rock, con sus características de audio.
+        Datos en vivo desde Google Sheets.
+      </p>
+    </header>
+
+    <div id="status" style="text-align:center;padding:5rem 0;color:hsl(var(--muted-foreground));">Cargando archivo...</div>
+
+    <div id="content" style="display:none;">
+      <div class="filters">
+        <input type="search" id="q" placeholder="Buscar canción o artista..." />
+        <div class="chips" id="decades"></div>
+      </div>
+
+      <p class="stencil text-muted" style="font-size:.875rem;margin-bottom:1rem;" id="stats"></p>
+
+      <div style="overflow-x:auto;border:1px solid hsl(var(--border));">
+        <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+          <thead style="background:hsl(var(--card));border-bottom:1px solid hsl(var(--border));">
+            <tr style="text-align:left;">
+              <th style="padding:.75rem;" class="stencil">#</th>
+              <th style="padding:.75rem;" class="stencil">Canción</th>
+              <th style="padding:.75rem;" class="stencil">Artista</th>
+              <th style="padding:.75rem;text-align:right;" class="stencil">Año</th>
+              <th style="padding:.75rem;text-align:right;" class="stencil">Pop.</th>
+              <th style="padding:.75rem;text-align:right;" class="stencil">Tempo</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div style="display:flex;justify-content:center;gap:.5rem;margin-top:1.5rem;align-items:center;">
+        <button id="prev" class="chip">◄ ANT</button>
+        <span id="page-info" class="stencil" style="padding:0 1rem;"></span>
+        <button id="next" class="chip">SIG ►</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-slot"></div>
+
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/partials.js"></script>
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQtKdeAmKfKCYZ8VUG4VEf3gI3YDrko3OoHEKy0uwGPEwWJ5FmnXxdnNF_JpYeELZ6XjknkhRRsU8B9/pub?output=csv";
+    const PAGE_SIZE = 30;
+    const decades = ["Todas","1950s","1960s","1970s","1980s","1990s","2000s","2010s","2020s"];
+    let songs = [], q = "", dec = "Todas", page = 1;
+
+    function parseCSV(text) {
+      const rows = []; let row = [], cur = "", inQ = false;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (inQ) {
+          if (c === '"' && text[i+1] === '"') { cur += '"'; i++; }
+          else if (c === '"') inQ = false;
+          else cur += c;
+        } else {
+          if (c === '"') inQ = true;
+          else if (c === ',') { row.push(cur); cur = ""; }
+          else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ""; }
+          else if (c === '\r') {}
+          else cur += c;
+        }
+      }
+      if (cur.length || row.length) { row.push(cur); rows.push(row); }
+      return rows;
+    }
+    const yearOf = s => { const m = (s||"").match(/\d{4}/); return m ? +m[0] : 0; };
+    const decadeOf = y => y ? `${Math.floor(y/10)*10}s` : "?";
+
+    fetch(CSV_URL).then(r => r.text()).then(text => {
+      const rows = parseCSV(text);
+      const header = rows[0].map(h => h.trim());
+      const idx = k => header.indexOf(k);
+      songs = rows.slice(1).filter(r => r.length >= header.length - 2 && r[idx("name")]).map(r => ({
+        name: r[idx("name")], artist: r[idx("artist")],
+        release_date: r[idx("release_date")],
+        popularity: +r[idx("popularity")] || 0,
+        tempo: +r[idx("tempo")] || 0
+      }));
+      document.getElementById("status").style.display = "none";
+      document.getElementById("content").style.display = "block";
+      document.getElementById("decades").innerHTML = decades.map(d =>
+        `<button class="chip${d===dec?' active':''}" data-dec="${d}">${d}</button>`
+      ).join("");
+      document.getElementById("decades").addEventListener("click", e => {
+        const b = e.target.closest(".chip"); if (!b) return;
+        dec = b.dataset.dec; page = 1;
+        document.getElementById("decades").querySelectorAll(".chip").forEach(x => x.classList.toggle("active", x.dataset.dec === dec));
+        render();
+      });
+      document.getElementById("q").addEventListener("input", e => { q = e.target.value; page = 1; render(); });
+      document.getElementById("prev").onclick = () => { if (page > 1) { page--; render(); } };
+      document.getElementById("next").onclick = () => { page++; render(); };
+      render();
+    }).catch(e => { document.getElementById("status").textContent = "Error: " + e.message; });
+
+    function render() {
+      const ql = q.toLowerCase().trim();
+      const filtered = songs.filter(s => {
+        const y = yearOf(s.release_date);
+        return (dec === "Todas" || decadeOf(y) === dec) &&
+               (!ql || s.name.toLowerCase().includes(ql) || s.artist.toLowerCase().includes(ql));
+      });
+      const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      if (page > pageCount) page = pageCount;
+      const visible = filtered.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE);
+      document.getElementById("stats").textContent = `${filtered.length.toLocaleString("es-AR")} CANCIONES · PÁGINA ${page} / ${pageCount}`;
+      document.getElementById("page-info").textContent = `${page} / ${pageCount}`;
+      document.getElementById("tbody").innerHTML = visible.map((s, i) => `
+        <tr style="border-bottom:1px solid hsl(var(--border));">
+          <td style="padding:.75rem;color:hsl(var(--muted-foreground));">${(page-1)*PAGE_SIZE + i + 1}</td>
+          <td style="padding:.75rem;font-weight:500;">${s.name}</td>
+          <td style="padding:.75rem;color:hsl(var(--blood));">${s.artist}</td>
+          <td style="padding:.75rem;text-align:right;">${yearOf(s.release_date) || "—"}</td>
+          <td style="padding:.75rem;text-align:right;">${s.popularity}</td>
+          <td style="padding:.75rem;text-align:right;">${s.tempo ? s.tempo.toFixed(0) : "—"}</td>
+        </tr>
+      `).join("");
+    }
+  </script>
+</body>
+</html>

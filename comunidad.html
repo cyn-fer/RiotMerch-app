@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comunidad — Videos de fans | Riot Merch</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div id="nav-slot"></div>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="kicker">LA TRIBU EN VIVO</p>
+      <h1>Videos de la <span class="text-blood">comunidad</span></h1>
+      <p>Nuestros compradores luciendo el merch de RIOT en los recitales más bestiales. Mandanos tu video y sumate al muro de la tribu.</p>
+      <div style="margin-top:2rem;display:flex;flex-wrap:wrap;gap:1rem;">
+        <a href="https://wa.me/5491100000000?text=Hola%20RIOT%2C%20quiero%20mandar%20un%20video%20de%20fan!" target="_blank" rel="noopener" class="btn btn-blood">ENVIAR MI VIDEO</a>
+        <a href="https://instagram.com" target="_blank" rel="noopener" class="btn btn-outline">ETIQUETANOS</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="section-title">
+      <div>
+        <p class="kicker">FROM THE PIT</p>
+        <h2>Caos en cámara</h2>
+      </div>
+      <p class="text-muted" id="vid-count" style="font-size:.875rem;"></p>
+    </div>
+    <div class="grid grid-3" id="vid-grid"></div>
+  </section>
+
+  <section class="container section">
+    <div style="border:2px solid hsl(var(--blood));padding:3rem 2rem;text-align:center;background:hsl(var(--card));">
+      <p class="kicker">¿FUISTE AL RECITAL?</p>
+      <h2 style="font-size:clamp(2.5rem,6vw,4.5rem);margin-top:.75rem;">Mostranos el headbang</h2>
+      <p style="margin-top:1rem;max-width:32rem;margin-left:auto;margin-right:auto;color:hsl(var(--foreground)/.8);">
+        Mandanos tu video por WhatsApp o etiquetanos en Instagram con #RIOTMERCH y aparecé en esta página.
+      </p>
+      <div style="margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;">
+        <a href="mailto:hola@riotmerch.com?subject=Video%20de%20fan" class="btn btn-outline">hola@riotmerch.com</a>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-slot"></div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/partials.js"></script>
+  <script>
+    document.getElementById("vid-grid").innerHTML = window.FAN_VIDEOS.map(fanVideoHTML).join("");
+    document.getElementById("vid-count").textContent = `${window.FAN_VIDEOS.length} videos · actualizado semanalmente`;
+    bindFanVideos();
+  </script>
+</body>
+</html>
